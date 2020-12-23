@@ -33,7 +33,7 @@ def powerOff(device):
     log.info("Device powered off")
 
 def setRGB(r: int, g: int, b: int, device):
-    # Values for color shoud be between 0 and 255
+    # Values for color should be between 0 and 255
     if r > 255: r = 255
     if r < 0: r= 0
     if g > 255: g = 255 
@@ -71,7 +71,7 @@ def setWhite(intensity: int, device):
         device.char_write_handle(0x0009, payload)
     except pygatt.exceptions.NotConnectedError:
         raise pygatt.exceptions.NotConnectedError("Device nor connected!")
-    log.info("White color set -- Intensiti %d", intensity)
+    log.info("White color set -- Intensity: %d", intensity)
 
 def setBuiltIn(mode: int, speed: int, device):
     if mode<37 | mode > 56:

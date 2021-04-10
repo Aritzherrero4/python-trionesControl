@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="trionesControl",
-    version="1.1.0",
+    version="1.2.0",
     author="Aritz Herrero",
     description="Simple python package to control smart lights using the Triones porotocol",
     long_description=long_description,

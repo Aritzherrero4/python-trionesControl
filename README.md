@@ -23,7 +23,7 @@ This will install all the dependencies used by this package and ``pexpect``, an 
 ### Connexion handling
 
 * ``connect(MAC)``: Connect to the device with the mac address specified.
-
+* ``connect(MAC, False)``: Connect to the device with the mac address specified and dont reset previous connections for using multiple devices at once.
 * ``disconnect(device)``: Disconnects from the specified device.
 
 ### LED Control
@@ -37,6 +37,10 @@ This will install all the dependencies used by this package and ``pexpect``, an 
 * ``setWhite(intensity: int, device)``: Sets the device's LED to white with the specified intensiy. (0-255)
 
 * ``setBuiltIn(mode: int, speed: int, device)``: Activates the selected predefined built-in mode at the selected speed (0-255). The built modes go from 37 to 56.
+
+All the functions do not wait for any response from the device by default. This can be overriden by adding an aditional argument set to True.
+
+* ``powerOn(device, True)``: Powers on the device, the LEDs will turn on and waits for a reponse.
 
 ## Example use
 

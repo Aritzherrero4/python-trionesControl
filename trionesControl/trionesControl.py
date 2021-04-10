@@ -5,10 +5,23 @@ import pygatt.exceptions
 MAIN_CHARACTERISTIC_UUID = "0000ffd9-0000-1000-8000-00805f9b34fb"
 
 log = logging.getLogger(__name__)
-def connect(MAC):
+
+def connect(MAC, reset_on_start=True):
+    """
+    Create and start a new backend adapter and connect it to a device.
+
+    When connecting to multiple devices at the same time make sure to set reset_on_start
+    to False after the first connection is made, otherwise all connections made before are
+    invalidated.
+
+    :param string MAC: MAC address of the device to connect to.
+    :param bool reset_on_start: Perhaps due to a bug in gatttol or pygatt,
+        but if the bluez backend isn't restarted, it can sometimes lock up
+        the computer when trying to make a connection to HCI device.
+    """
     try:
         adapter = pygatt.GATTToolBackend()
-        adapter.start()
+        adapter.start(reset_on_start=reset_on_start)
         device = adapter.connect(MAC)
     except pygatt.exceptions.NotConnectedError:
         raise pygatt.exceptions.NotConnectedError("Device nor connected!")

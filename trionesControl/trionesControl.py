@@ -34,21 +34,39 @@ def disconnect(device):
     except pygatt.exceptions.NotConnectedError:
         raise pygatt.exceptions.NotConnectedError("Device nor connected!")
     log.info("Device disconnected")
-def powerOn(device):
+
+def powerOn(device, wait_for_response=False):
+    """
+    :param bool wait_for_response: wait for response after writing. A GATT "command"
+    is used when not waiting for a response. The remote host will not
+    acknowledge the write.
+    """
+
     try:
-        device.char_write(MAIN_CHARACTERISTIC_UUID, b'\xcc\x23\x33')
+        device.char_write(MAIN_CHARACTERISTIC_UUID, b'\xcc\x23\x33', wait_for_response=wait_for_response)
     except pygatt.exceptions.NotConnectedError:
         raise pygatt.exceptions.NotConnectedError("Device nor connected!")
     log.info("Device powered on")
 
-def powerOff(device):
+def powerOff(device, wait_for_response=False):
+    """
+    :param bool wait_for_response: wait for response after writing. A GATT "command"
+    is used when not waiting for a response. The remote host will not
+    acknowledge the write.
+    """
+
     try:
-        device.char_write(MAIN_CHARACTERISTIC_UUID, b'\xcc\x24\x33')
+        device.char_write(MAIN_CHARACTERISTIC_UUID, b'\xcc\x24\x33', wait_for_response=wait_for_response)
     except pygatt.exceptions.NotConnectedError:
         raise pygatt.exceptions.NotConnectedError("Device nor connected!")
     log.info("Device powered off")
 
-def setRGB(r: int, g: int, b: int, device):
+def setRGB(r: int, g: int, b: int, device, wait_for_response=False):
+    """
+    :param bool wait_for_response: wait for response after writing. A GATT "command"
+    is used when not waiting for a response. The remote host will not
+    acknowledge the write.
+    """
     # Values for color should be between 0 and 255
     if r > 255: r = 255
     if r < 0: r= 0
@@ -66,12 +84,17 @@ def setRGB(r: int, g: int, b: int, device):
     payload.append(0xF0)
     payload.append(0xAA)
     try:
-        device.char_write(MAIN_CHARACTERISTIC_UUID, payload)
+        device.char_write(MAIN_CHARACTERISTIC_UUID, payload, wait_for_response=wait_for_response)
     except pygatt.exceptions.NotConnectedError:
         raise pygatt.exceptions.NotConnectedError("Device nor connected!")
     log.info("RGB set -- R: %d, G: %d, B: %d", r, g, b)
 
-def setWhite(intensity: int, device):
+def setWhite(intensity: int, device, wait_for_response=False):
+    """
+    :param bool wait_for_response: wait for response after writing. A GATT "command"
+    is used when not waiting for a response. The remote host will not
+    acknowledge the write.
+    """
     # Intensity value shoud be between 0  and 255
     if (intensity > 255): intensity = 255
     if (intensity < 0): intensity = 0
@@ -84,12 +107,18 @@ def setWhite(intensity: int, device):
     payload.append(0x0F)
     payload.append(0xAA)
     try:
-        device.char_write(MAIN_CHARACTERISTIC_UUID, payload)
+        device.char_write(MAIN_CHARACTERISTIC_UUID, payload, wait_for_response=wait_for_response)
     except pygatt.exceptions.NotConnectedError:
         raise pygatt.exceptions.NotConnectedError("Device nor connected!")
     log.info("White color set -- Intensity: %d", intensity)
 
-def setBuiltIn(mode: int, speed: int, device):
+def setBuiltIn(mode: int, speed: int, device, wait_for_response=False):
+    """
+    :param bool wait_for_response: wait for response after writing. A GATT "command"
+    is used when not waiting for a response. The remote host will not
+    acknowledge the write.
+    """
+
     if mode<37 | mode > 56:
         raise pygatt.exceptions.BLEError("Invalid Mode")
     if speed<1: speed =1
@@ -100,7 +129,7 @@ def setBuiltIn(mode: int, speed: int, device):
     payload.append(speed)
     payload.append(0x44)
     try:
-        device.char_write(MAIN_CHARACTERISTIC_UUID, payload)
+        device.char_write(MAIN_CHARACTERISTIC_UUID, payload, wait_for_response=wait_for_response)
     except pygatt.exceptions.NotConnectedError:
         raise pygatt.exceptions.NotConnectedError("Device nor connected!")
     log.info("Default mode %d set -- Speed %d", mode, speed)

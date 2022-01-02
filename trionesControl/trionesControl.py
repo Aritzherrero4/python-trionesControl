@@ -2,7 +2,7 @@ import pygatt
 import logging
 import pygatt.exceptions 
 
-MAIN_CHARACTERISTIC_UUID = "0000ffd9-0000-1000-8000-00805f9b34fb"
+MAIN_CHARACTERISTIC_HANDLE = 0x0007
 
 log = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ def connect(MAC, reset_on_start=True):
         adapter.start(reset_on_start=reset_on_start)
         device = adapter.connect(MAC)
     except pygatt.exceptions.NotConnectedError:
-        raise pygatt.exceptions.NotConnectedError("Device nor connected!")
+        raise pygatt.exceptions.NotConnectedError("Device not connected!")
     log.info("Device connected")
     return device
 
@@ -32,7 +32,7 @@ def disconnect(device):
     try:
         device.disconnect()
     except pygatt.exceptions.NotConnectedError:
-        raise pygatt.exceptions.NotConnectedError("Device nor connected!")
+        raise pygatt.exceptions.NotConnectedError("Device not connected!")
     log.info("Device disconnected")
 
 def powerOn(device, wait_for_response=False):
@@ -43,9 +43,9 @@ def powerOn(device, wait_for_response=False):
     """
 
     try:
-        device.char_write(MAIN_CHARACTERISTIC_UUID, b'\xcc\x23\x33', wait_for_response=wait_for_response)
+        device.char_write_handle(MAIN_CHARACTERISTIC_HANDLE, b'\xcc\x23\x33', wait_for_response=wait_for_response)
     except pygatt.exceptions.NotConnectedError:
-        raise pygatt.exceptions.NotConnectedError("Device nor connected!")
+        raise pygatt.exceptions.NotConnectedError("Device not connected!")
     log.info("Device powered on")
 
 def powerOff(device, wait_for_response=False):
@@ -56,9 +56,9 @@ def powerOff(device, wait_for_response=False):
     """
 
     try:
-        device.char_write(MAIN_CHARACTERISTIC_UUID, b'\xcc\x24\x33', wait_for_response=wait_for_response)
+        device.char_write_handle(MAIN_CHARACTERISTIC_HANDLE, b'\xcc\x24\x33', wait_for_response=wait_for_response)
     except pygatt.exceptions.NotConnectedError:
-        raise pygatt.exceptions.NotConnectedError("Device nor connected!")
+        raise pygatt.exceptions.NotConnectedError("Device not connected!")
     log.info("Device powered off")
 
 def setRGB(r: int, g: int, b: int, device, wait_for_response=False):
@@ -84,9 +84,9 @@ def setRGB(r: int, g: int, b: int, device, wait_for_response=False):
     payload.append(0xF0)
     payload.append(0xAA)
     try:
-        device.char_write(MAIN_CHARACTERISTIC_UUID, payload, wait_for_response=wait_for_response)
+        device.char_write_handle(MAIN_CHARACTERISTIC_HANDLE, payload, wait_for_response=wait_for_response)
     except pygatt.exceptions.NotConnectedError:
-        raise pygatt.exceptions.NotConnectedError("Device nor connected!")
+        raise pygatt.exceptions.NotConnectedError("Device not connected!")
     log.info("RGB set -- R: %d, G: %d, B: %d", r, g, b)
 
 def setWhite(intensity: int, device, wait_for_response=False):
@@ -107,9 +107,9 @@ def setWhite(intensity: int, device, wait_for_response=False):
     payload.append(0x0F)
     payload.append(0xAA)
     try:
-        device.char_write(MAIN_CHARACTERISTIC_UUID, payload, wait_for_response=wait_for_response)
+        device.char_write_handle(MAIN_CHARACTERISTIC_HANDLE, payload, wait_for_response=wait_for_response)
     except pygatt.exceptions.NotConnectedError:
-        raise pygatt.exceptions.NotConnectedError("Device nor connected!")
+        raise pygatt.exceptions.NotConnectedError("Device not connected!")
     log.info("White color set -- Intensity: %d", intensity)
 
 def setBuiltIn(mode: int, speed: int, device, wait_for_response=False):
@@ -129,8 +129,8 @@ def setBuiltIn(mode: int, speed: int, device, wait_for_response=False):
     payload.append(speed)
     payload.append(0x44)
     try:
-        device.char_write(MAIN_CHARACTERISTIC_UUID, payload, wait_for_response=wait_for_response)
+        device.char_write_handle(MAIN_CHARACTERISTIC_HANDLE, payload, wait_for_response=wait_for_response)
     except pygatt.exceptions.NotConnectedError:
-        raise pygatt.exceptions.NotConnectedError("Device nor connected!")
+        raise pygatt.exceptions.NotConnectedError("Device not connected!")
     log.info("Default mode %d set -- Speed %d", mode, speed)
 
